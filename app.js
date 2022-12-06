@@ -1,20 +1,20 @@
 const express = require('express');
-const mysql = require('mysql2');
 const app = express();
-const Product = require('./model/product');
+const sequelize = require('./util/database')
+const bodyParser = require('body-parser');
+const playerRoutes = require('./routes/player');
 
-app.get('/get', async (req, res) => {
-    console.log('here')
-    const product = await new Product("title");
-    console.log('product', product)
-    await product
-        .save()
-        .then(() => {
-            res.json('Done');
+app.use(express.json());
+app.use(bodyParser.json());
+app.use(playerRoutes)
+
+sequelize.sync()
+    .then(() => {
+        app.listen(3000, () => {
+            console.log('Connected at port 3000')
         })
-        .catch(err => console.log("Error while connecting", err));
-})
+    })
+    .catch(err => {
+        console.log('Error', err)
+    })
 
-app.listen(3306, () => {
-    console.log('Connected at port 3306')
-})
