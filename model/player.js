@@ -11,10 +11,6 @@ const Player = sequelize.define('player', {
         type: Sequelize.STRING,
         allowNull: false
     },
-    inTeam: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
     captain: {
         type: Sequelize.STRING,
         allowNull: false

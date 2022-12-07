@@ -1,12 +1,10 @@
 const Player = require('../model/player')
-const Team = require('../model/teams')
+const Team = require('../model/team')
+const Allteams = require('../model/selected')
 
 exports.getPlayer = async (req, res, next) => {
-    // const player = await Player.findAll()
-    // res.json(player);
-
-    const team = await Team.findAll()
-    res.json(team);
+    const player = await Player.findAll()
+    res.json(player);
 }
 
 // .... creating players .... //
@@ -15,21 +13,66 @@ exports.postPlayer = async (req, res, next) => {
     try {
         const name = await req.body.name;
         const gender = await req.body.gender;
-        const inTeam = await "No";
         const captain = await req.body.captain;
-        const createdPlayer = await Player.create({
+        await Player.create({
             name: name,
             gender: gender,
-            inTeam: inTeam,
             captain: captain
         });
+
         if (captain == "Yes") {
-            const newTeam = await Team.create({
-                teamName: "newTeam"
+
+            const player = await Player.findOne({ where: { name: name } });
+
+            await Team.create({
+                teamName: name
+            })
+
+            const teamId = await Team.findOne({ where: { teamName: name } })
+            await Allteams.create({
+                TeamId: teamId.dataValues.id,
+                PlayerId: player.dataValues.id
             })
         }
         res.redirect('/')
     } catch (error) {
-        res.json('Error', error)
+        console.log('Error in postPlayer', error)
+        res.json('Error creating the user')
+    }
+}
+
+// updating a player ......!
+
+exports.updatePlayer = async (req, res, next) => {
+    try {
+        const id = await req.body.id;
+        const name = await req.body.name;
+        const gender = await req.body.gender;
+        const captain = await req.body.captain;
+
+        await Player.update({
+            name: name,
+            gender: gender,
+            captain: captain
+        }, {
+            where: { id: id }
+        })
+        res.redirect('/')
+    } catch (error) {
+        console.log('Error updating the player', error)
+        res.json("Error while updating the player")
+    }
+}
+
+// deleting a player...!
+
+exports.deletePlayer = async (req, res, next) => {
+    try {
+        const id = req.body.id;
+        await Player.destroy({ where: { id: id } });
+        res.redirect('/');
+    } catch (error) {
+        console.log('Error', error)
+        res.json("Error while deleteing a player")
     }
 }

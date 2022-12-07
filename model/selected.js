@@ -2,19 +2,15 @@ const Sequelize = require('sequelize');
 
 const sequelize = require('../util/database');
 
-const User = sequelize.define('user', {
-    email: {
+const Selected = sequelize.define('selected', {
+    TeamId: {
         type: Sequelize.STRING,
         allowNull: false
     },
-    userName: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-    password: {
+    PlayerId: {
         type: Sequelize.STRING,
         allowNull: false
     }
 });
 
-module.exports = User;
+module.exports = Selected;
