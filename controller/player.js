@@ -24,13 +24,16 @@ exports.postPlayer = async (req, res, next) => {
 
             const player = await Player.findOne({ where: { name: name } });
 
+            const total = await Team.findAll();
+
+            const no = await Object.keys(total).length + 1;
+
             await Team.create({
-                teamName: name
+                teamName: `Team_${no}`
             })
 
-            const teamId = await Team.findOne({ where: { teamName: name } })
             await Allteams.create({
-                TeamId: teamId.dataValues.id,
+                TeamName: `Team_${no}`,
                 PlayerId: player.dataValues.id
             })
         }

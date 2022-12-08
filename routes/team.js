@@ -11,6 +11,8 @@ router.patch('/updateTeam', teamController.updateTeam)
 
 router.delete('/deleteTeam', teamController.deleteTeam)
 
-router.get('/assign',teamController.assignPlayer);
+router.get('/assign', teamController.assignPlayer);
+
+router.get('/selected', teamController.selectedPlayer)
 
 module.exports = router;
