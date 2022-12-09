@@ -3,12 +3,12 @@ const Sequelize = require('sequelize');
 const sequelize = require('../util/database');
 
 const Selected = sequelize.define('selected', {
-    TeamName: {
-        type: Sequelize.STRING,
+    TeamId: {
+        type: Sequelize.INTEGER,
         allowNull: false
     },
     PlayerId: {
-        type: Sequelize.NUMBER,
+        type: Sequelize.INTEGER,
         allowNull: false
     }
 });

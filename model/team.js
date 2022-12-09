@@ -6,6 +6,10 @@ const Team = sequelize.define('team', {
     teamName: {
         type: Sequelize.STRING,
         allowNull: false
+    },
+    points: {
+        type: Sequelize.INTEGER,
+        allowNull: false
     }
 });
 

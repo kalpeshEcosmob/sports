@@ -31,8 +31,9 @@ exports.postSignin = async (req, res, next) => {
             userName: name,
             password: hashed
         });
-        res.redirect('/')
+        res.json("Added....!")
     } catch (error) {
+        console.log('err', error)
         res.status(404).json("Error signing the customer")
     }
 }
