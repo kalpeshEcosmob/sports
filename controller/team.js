@@ -26,7 +26,7 @@ exports.updateTeam = async (req, res, next) => {
         })
 
         res.redirect('/teams')
-
+        
     } catch (error) {
         console.log('Error updating the team', error)
         res.json("Error while updating the team")
@@ -89,7 +89,6 @@ exports.assignPlayer = async (req, res, next) => {
         /*======================team to add ...... gender required============================= */
         const TeamId = await req.body.TeamId;
         const gender = await req.body.gender;
-
         /*=============================================================================*/
         /*==========================Checking wheather team has space for players===========*/
 
@@ -99,7 +98,7 @@ exports.assignPlayer = async (req, res, next) => {
         const PlayerId = await check.map(e => e.PlayerId);
         const players = await [];
         for (i = 0; i < check.length; i++) {
-            let value = await Player.findOne({ where: { id: PlayerId[i], captain: "No" } })
+            let value = await Player.findOne({ where: { id: PlayerId[i] } })
             players.push(value)
         }
         const is = await players[0];
@@ -109,7 +108,6 @@ exports.assignPlayer = async (req, res, next) => {
 
             /*=============================================================================*/
             /*================adding the check for requested players==================*/
-
             if (gender === "M" && totalMaleInTeam.length == 5) throw error;
 
             if (gender === "F" && totalFemaleInTeam.length == 1) throw error;

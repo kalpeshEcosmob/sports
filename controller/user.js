@@ -16,6 +16,7 @@ exports.postLogin = async (req, res, next) => {
         const token = await jwt.sign({ name: name }, process.env.SECRET_KEY);
         res.json({ email: email, userName: loggedUser.dataValues.userName, token: token })
     } catch (error) {
+        console.log('error', error)
         res.status(404).json('Username or password is incorrect')
     }
 }

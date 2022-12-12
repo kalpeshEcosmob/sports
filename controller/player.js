@@ -14,6 +14,7 @@ exports.postPlayer = async (req, res, next) => {
         const name = await req.body.name;
         const gender = await req.body.gender;
         const captain = await req.body.captain;
+
         const createdPlayer = await Player.create({
             name: name,
             gender: gender,
@@ -25,6 +26,7 @@ exports.postPlayer = async (req, res, next) => {
             const player = await Player.findOne({ where: { id: createdPlayer.dataValues.id } });
 
             const total = await Team.findAll();
+
             if (total.length > 0) {
                 const arr = await total.map(e => e.dataValues.teamName);
                 const number = await [];
@@ -44,7 +46,6 @@ exports.postPlayer = async (req, res, next) => {
                     TeamId: createdTeam.dataValues.id,
                     PlayerId: player.dataValues.id
                 })
-                res.redirect('/')
             } else {
                 const requiredNo = await 1;
                 const createdTeam = await Team.create({
@@ -56,11 +57,9 @@ exports.postPlayer = async (req, res, next) => {
                     TeamId: createdTeam.dataValues.id,
                     PlayerId: player.dataValues.id
                 })
-                res.redirect('/')
             }
         }
         res.redirect('/')
-
     } catch (error) {
         console.log('Error in postPlayer', error)
         res.json('Error creating the user')
