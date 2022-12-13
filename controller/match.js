@@ -4,41 +4,7 @@ const m = require('moment');
 
 exports.match = async (req, res, next) => {
     try {
-        res.json("Nothing in the controller to process")
-
-        /*==============================================================================*/
-
-        // const teams = await Team.findAll();
-        // const teamA = await getRandomItem(teams);
-        // const winner = await teamA;
-        // removeItemOnce(teams, teamA);
-        // const teamB = await getRandomItem(teams);
-
-        // Match.create({
-        //     team1: teamA.dataValues.id,
-        //     team2: teamB.dataValues.id,
-        //     winner: winner.dataValues.id,
-        //     scheduled: Date()
-        // })
-
-        /*=========================================================================*/
-        //     const point = winner.dataValues.points + 2;
-
-        //     await Team.update({
-        //         points: point
-        //     }, {
-        //         where: { id: winner.dataValues.id }
-        //     })
-        //     res.json({ teams: teams, winner: teamA, loser: teamB })
-
-        /*=========================================================================*/
-    } catch (error) {
-        res.json("Error in matching the players");
-    }
-}
-
-exports.scheduleMatch = async (req, res, next) => {
-    try {
+        
         /* ============================getting data from the user====================== */
 
         const givenDate = await req.body.date;
@@ -52,7 +18,8 @@ exports.scheduleMatch = async (req, res, next) => {
             const t1 = await matchFixed.map(e => e.dataValues.team1);
             const t2 = await matchFixed.map(e => e.dataValues.team2);
 
-            const t = [...t1, ...t2]
+            const t = [...t1, ...t2];
+
             let t3 = await [];
             let available = await Team.findAll();
             for (let x of t) {
@@ -66,7 +33,9 @@ exports.scheduleMatch = async (req, res, next) => {
                 }
             })
 
-            if (notinTeam.length < 2) throw error;
+            if (notinTeam.length < 2) {
+                return res.json("No 2 teams available to match")
+            }
 
             const teamA = await getRandomItem(notinTeam);
             const winner = await teamA;
@@ -79,10 +48,8 @@ exports.scheduleMatch = async (req, res, next) => {
                 winner: winner.dataValues.id,
                 scheduled: date
             })
-
             res.json({ Team: teamB })
         } else {
-
             const teams = await Team.findAll();
             const teamA = await getRandomItem(teams);
             const winner = await teamA;
@@ -104,9 +71,12 @@ exports.scheduleMatch = async (req, res, next) => {
 
 exports.point = async (req, res, next) => {
     try {
+        
         const matches = await Match.findAll();
 
-        if (matches.length == 0) throw error
+        if (matches.length == 0) {
+            return res.json("No match found ...!")
+        }
 
         const winners = await matches.map(e => e.winner);
 
@@ -144,10 +114,4 @@ function removeItemOnce(arr, value) {
         arr.splice(index, 1);
     }
     return arr;
-}
-
-Date.prototype.addDays = function (days) {
-    const date = new Date(this.valueOf())
-    date.setDate(date.getDate() + days)
-    return date
 }

@@ -3,10 +3,8 @@ const router = express.Router();
 const matchController = require('../controller/match');
 const isAuth = require('../middleware/is-auth').getauth;
 
-router.get('/match', matchController.match);
-
 router.post('/point', matchController.point);
 
-router.post('/schedule', matchController.scheduleMatch)
+router.post('/match', matchController.match)
 
 module.exports = router;

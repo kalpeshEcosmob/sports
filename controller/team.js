@@ -14,6 +14,9 @@ exports.getTeams = async (req, res, next) => {
 exports.updateTeam = async (req, res, next) => {
     try {
         const TeamId = await req.body.TeamId;
+        if (!TeamId) {
+            res.status(400).json("Please enter Team Id")
+        }
         const newTeamName = await req.body.newTeamName;
 
         const teamToChange = await Team.findOne({ where: { id: TeamId } })
@@ -24,9 +27,8 @@ exports.updateTeam = async (req, res, next) => {
         }, {
             where: { id: teamIdToChange }
         })
-
         res.redirect('/teams')
-        
+
     } catch (error) {
         console.log('Error updating the team', error)
         res.json("Error while updating the team")
@@ -39,6 +41,7 @@ exports.deleteTeam = async (req, res, next) => {
 
         /* ===========================================================================*/
         /* ==================== if want to change the captain to no =================*/
+        /* ===========================================================================*/
 
         // const teamData = await Selected.findAll({ where: { TeamName: TeamName } })
         // const valueReq = await teamData.map(e => e.dataValues.PlayerId)
@@ -53,6 +56,7 @@ exports.deleteTeam = async (req, res, next) => {
         //         })
         //     }
         // }
+
         /* ===========================================================================*/
 
         await Team.destroy({ where: { id: TeamId } });
@@ -93,7 +97,9 @@ exports.assignPlayer = async (req, res, next) => {
         /*==========================Checking wheather team has space for players===========*/
 
         const check = await Selected.findAll({ where: { TeamId: TeamId } });
-        if (check.length > 6) throw error;
+        if (check.length > 6) {
+            return res.json("No enough space in the team to add player")
+        };
 
         const PlayerId = await check.map(e => e.PlayerId);
         const players = await [];
@@ -108,12 +114,19 @@ exports.assignPlayer = async (req, res, next) => {
 
             /*=============================================================================*/
             /*================adding the check for requested players==================*/
-            if (gender === "M" && totalMaleInTeam.length == 5) throw error;
+            /*=============================================================================*/
 
-            if (gender === "F" && totalFemaleInTeam.length == 1) throw error;
+            if (gender === "M" && totalMaleInTeam.length == 5) {
+                return res.status(400).json("No vacancy for a male member in the team")
+            };
+
+            if (gender === "F" && totalFemaleInTeam.length == 1) {
+                return res.status(400).json("No vacancy for a female member in the team")
+            };
         }
+
         /*=============================================================================*/
-        /*=============to find the player that are not in teams================*/
+        /*=============to find the player that are not in teams========================*/
         /*=============================================================================*/
 
         const a = await Selected.findAll();
@@ -132,15 +145,20 @@ exports.assignPlayer = async (req, res, next) => {
             }
         })
 
-        if (notinTeam.length == 0) throw error;
+        if (notinTeam.length == 0) {
+            return res.json("No un-selected players found ")
+        };
 
         /*============selecting the male and female not in the teams players=============*/
+
         if (gender === "M") {
             const malePlayers = await notinTeam.filter(e => {
                 return e.dataValues.gender == "M"
             });
 
-            if (malePlayers.length == 0) throw error;
+            if (malePlayers.length == 0) {
+                return res.json("No un-selected male players found ")
+            };
 
             const single = await getRandomItem(malePlayers);
             await Selected.create({
@@ -153,7 +171,9 @@ exports.assignPlayer = async (req, res, next) => {
                 return e.dataValues.gender == "F"
             });
 
-            if (femalePlayers.length == 0) throw error;
+            if (femalePlayers.length == 0) {
+                return res.json("No un-selected female players found ")
+            };
 
             const single = await getRandomItem(femalePlayers);
             await Selected.create({
@@ -163,7 +183,6 @@ exports.assignPlayer = async (req, res, next) => {
             res.json({ Player: "Player added " })
         }
     } catch (error) {
-        console.log('Error', error)
         res.json('Error in assigning the player...!...Team has no space')
     }
 }

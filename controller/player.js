@@ -3,8 +3,12 @@ const Team = require('../model/team')
 const Selected = require('../model/selected')
 
 exports.getPlayer = async (req, res, next) => {
-    const player = await Player.findAll()
-    res.json(player);
+    try {
+        const player = await Player.findAll()
+        res.json(player);
+    } catch (error) {
+        res.json("Error in getting  players....!")
+    }
 }
 
 // .... creating players .... //
@@ -20,6 +24,8 @@ exports.postPlayer = async (req, res, next) => {
             gender: gender,
             captain: captain
         });
+
+        /* =====================if captain create a team==========================*/
 
         if (captain == "Yes") {
 
@@ -61,7 +67,6 @@ exports.postPlayer = async (req, res, next) => {
         }
         res.redirect('/')
     } catch (error) {
-        console.log('Error in postPlayer', error)
         res.json('Error creating the user')
     }
 }
