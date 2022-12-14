@@ -5,9 +5,9 @@ const Selected = require('../model/selected')
 exports.getPlayer = async (req, res, next) => {
     try {
         const player = await Player.findAll()
-        res.json(player);
+        res.status(200).json(player);
     } catch (error) {
-        res.json("Error in getting  players....!")
+        res.json("Error in getting  players....!");
     }
 }
 

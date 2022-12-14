@@ -19,7 +19,7 @@ app.use(matchRoutes)
 sequelize.sync()
     .then(() => {
         app.listen(3000, () => {
-            console.log('Connected at port 3000')
+            console.log('Connected at port 3000');
         })
     })
     .catch(err => {
